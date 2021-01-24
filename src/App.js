@@ -11,8 +11,12 @@ const App = () => {
   const [k , setK] = useState(0);
   const [r , setR] = useState(0);
   const [s , setS] = useState(0);
+  const [v1 , setV1] = useState(0);
+  const [v2 , setV2] = useState(0);
   const [alpha , setAlpha] = useState(2);
   const [showPublicKey , setShowPublicKey] = React.useState(false);
+  const [aliceMessage , setAliceMessage] = React.useState('');
+  const [popUp, setPopUp] = React.useState(false);
 
   const exponentiation = (bas, exp, modulo)=> {
     let myBinary = parseInt(exp).toString(2).split("").reverse().join("");
@@ -20,7 +24,7 @@ const App = () => {
     let c = bas;
     if (exp === 0)
       return temp;
-    console.log(myBinary[0]);
+    // console.log(myBinary[0]);
     if(myBinary[0] === "1")
       temp = bas;
     for (let i=1; i < myBinary.length; i++){
@@ -32,26 +36,34 @@ const App = () => {
   };
 
 
-
-  const EE =(number, modulo, x, y) => {
-    if(number % modulo === 0)
-    {
-      x=0;
-      y=1;
-      return;
-    }
-    EE(modulo,number % modulo, x, y);
-    let temp = x;
-    x = y;
-    y = temp - y*(number/modulo);
-  };
-
   const modInverse = (number, modulo) =>{
-    let x,y;
-    EE(number,modulo, x, y);
-    if( x < 0 )
-      x += modulo;
-    return x;
+    let listOfDivisors = [number];
+    let listOfReminders = [];
+
+    let divider = modulo;
+    let myNumber = number;
+    let reminder;
+
+
+    while (myNumber !== 1){
+      console.log(myNumber);
+      console.log(divider);
+
+      listOfDivisors.push(Math.floor(divider % myNumber));
+      listOfReminders.push(Math.floor(divider / myNumber));
+
+      reminder = divider;
+      divider = myNumber;
+      myNumber =  Math.floor(reminder % myNumber);
+    }
+
+    let myFinal = listOfDivisors[listOfDivisors.length-1];
+    for (let i = listOfReminders.length; i > 0; i-- ){
+
+    }
+
+    console.log(listOfDivisors);
+    console.log(listOfReminders);
   };
 
 
@@ -71,8 +83,9 @@ const App = () => {
       }
     else {
       let y = exponentiation(alpha, a1, p1);
+      // let y2 = (2 ** a1) % parseInt(p1);
+      // console.log(y2);
       setY(y);
-      console.log(y)
     }
   };
 
@@ -82,6 +95,24 @@ const App = () => {
     if(p !== 0n)
       setShowPublicKey(!showPublicKey)
   };
+
+  const verifyV1 = () => {
+   alert(`${p}, ${alpha}, ${y}`);
+    if(1 <= r && r <= p-2) {
+      let step1 = exponentiation(y, r, p);
+      let step2 = exponentiation(r, s, p);
+      let v = (step1 * step2) % p;
+      console.log(v);
+    }
+  };
+
+  const verifyV2 = () => {
+    let toyHashMessage1 = toyHash(aliceMessage);
+    console.log(toyHashMessage1);
+    let v2 = exponentiation(alpha, toyHashMessage1, p);
+    console.log(v2)
+  };
+
 
   //Compute the GCD of 2 numbers
   const gcd = (c, b) => {
@@ -105,6 +136,38 @@ const App = () => {
       return b
     }
   };
+
+  const modInverseSecond = (a,  m) => {
+    let m0 = m;
+    let y = 0;
+    let x = 1;
+
+    if (m === 1)
+      return 0;
+
+    while (a > 1) {
+      // q is quotient
+      let q = Math.floor(a / m);
+      let t = m;
+
+      // m is remainder now, process same as
+      // Euclid's algo
+      m = a % m;
+      a = t;
+      t = y;
+
+      // Update y and x
+      y = x - q * y;
+      x = t;
+    }
+
+    // Make x positive
+    if (x < 0)
+      x += m0;
+
+    return Math.floor(x);
+  };
+
 
   //Determine if 2 numbers are relatively prime
   const toyHash = (message) =>{
@@ -135,15 +198,36 @@ const App = () => {
       // eslint-disable-next-line no-undef
       let r1 = (2 ** k1) % parseInt(p);
       setR(r1);
-      console.log("k1 " + k1);
-      console.log("1/k1 " + modInverse(160, 841));
-      let compute = Math.floor((1/k1) % p-1);
-      let s_computes = (compute * (toyHashMessage - (a * r1))) % (p-1);
+      console.log(toyHashMessage);
+      let compute = modInverseSecond(k1, p-1);
+      let s_computes = Math.floor(compute * (toyHashMessage - (a * r1)) % (p-1));
       setS(s_computes);
-      console.log(r1 + " " + s_computes);
-      return [r1, s]
+      if (s_computes < 0){
+        s_computes = (p-1) + s_computes;
+      }
+      return [r1, s_computes]
     }
   };
+
+  const handleChange = (event) => {
+    setAliceMessage(event.target.value);
+  };
+
+  const handleSubmit = (event) =>{
+    let toyHashMessage1 = toyHash(aliceMessage);
+    let aliceSign = generateAliceSignature(toyHashMessage1);
+    if(aliceSign[0] === null || aliceSign[0] === 0 || aliceSign[1] === null || aliceSign[1] === 0){
+      alert("Please generate other keys")
+    }
+    else {
+      setPopUp(true);
+      setR(aliceSign[0]);
+      setS(aliceSign[1]);
+    }
+    console.log(aliceSign);
+    event.preventDefault();
+  };
+
 
   return (
     <>
@@ -167,22 +251,53 @@ const App = () => {
           <div className="btnParent spanChild">
             <div className="btn btn-1 btn-keys"
                  onClick={generatePublicKey}>Public key</div>
-            {showPublicKey && <div style={{marginTop: 20}}>{`(${p}, 2, ${y})`}</div>}
+            {showPublicKey && <div style={{marginTop: 20}}>{`(p: ${p}, α: 2, y: ${y})`}</div>}
             <br/>
           </div>
           <div className="btnParent spanChild">
-            <div className="btn btn-1"
-                 onClick={()=>{
-                   alert("Private key is: " + a );
-                   let message = "message test sal niiiiiico";
-                   let toyHashMessage1 = toyHash(message);
-                   console.log(toyHashMessage1)
-                   generateAliceSignature(toyHashMessage1);
-                 }}>Private Key</div>
-            <br/>
-          </div>
+          <div className="btn btn-1"
+               onClick={()=>{
+                 alert("Private key is: " + a );
+               }}>Private Key</div>
+          <br/>
+        </div>
         </div>
 
+        <div className="App-header2"
+             style={{display: 'flex', flexDirection:  'row', justifyContent: 'space-around'}}>
+          {
+            <form onSubmit={handleSubmit} style={{ width: '80%'}}>
+              <label style={{fontSize: 25, marginLeft: 20}}>
+                Message:
+                <input type="text"
+                       style={{padding: 20, width: 300, fontSize: 25, margin: 30}}
+                       value={aliceMessage}
+                       onChange={handleChange}/>
+              </label>
+              <input type="submit" value="Send text" className="btn btn-1"
+                     style={{padding: 20, fontSize: 20, marginRight: 20}}/>
+            </form>
+          }
+          {
+            popUp === true &&
+           <div style={{display: 'flex', flexDirection:  'row', justifyContent: 'space-around'}}>
+             <div>
+               {r !== 0 && r !== null && s !== 0 && s!== null && `Alice's sign: (${r},  ${s})`}
+             </div>
+             <div className="btn btn-1"
+                  style={{padding: 20, margin: 30}}
+                  onClick={verifyV1}>
+               Verify v1
+             </div>
+             <br/>
+             <div className="btn btn-1"
+                  style={{padding: 20, margin: 30}}
+                  onClick={verifyV2}>
+               Verify v2
+             </div>
+           </div>
+          }
+        </div>
       </div>
     </>
   );
