@@ -8851,6 +8851,11 @@ raf@^3.4.1:
   dependencies:
     performance-now "^2.1.0"
 
+random-prime@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/random-prime/-/random-prime-1.0.0.tgz#9e851a7a00990a9413f5ee82fa8cb406b05e26fa"
+  integrity sha512-jC7L2D9WpAffzb9b5Wbi1DkM2JTXfiTd4QfNSEeJWtpIeg+1lY0HYVipUmxhZ0J4teEY4UxAzemrQ/3UcOU9yA==
+
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5, randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
@@ -11301,9 +11306,9 @@ write@1.0.3:
     mkdirp "^0.5.1"
 
 ws@^6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.1.tgz#442fdf0a47ed64f59b6a5d8ff130f4748ed524fb"
-  integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.2.tgz#dd5cdbd57a9979916097652d78f1cc5faea0c32e"
+  integrity sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw==
   dependencies:
     async-limiter "~1.0.0"
 
