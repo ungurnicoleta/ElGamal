@@ -8851,6 +8851,11 @@ raf@^3.4.1:
   dependencies:
     performance-now "^2.1.0"
 
+random-prime@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/random-prime/-/random-prime-1.0.0.tgz#9e851a7a00990a9413f5ee82fa8cb406b05e26fa"
+  integrity sha512-jC7L2D9WpAffzb9b5Wbi1DkM2JTXfiTd4QfNSEeJWtpIeg+1lY0HYVipUmxhZ0J4teEY4UxAzemrQ/3UcOU9yA==
+
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5, randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
@@ -10411,9 +10416,9 @@ timsort@^0.3.0:
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
 tmpl@1.0.x:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
-  integrity sha1-I2QN17QtAEM5ERQIIOXPRA5SHdE=
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.5.tgz#8683e0b902bb9c20c4f726e3c0b69f36518c07cc"
+  integrity sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==
 
 to-arraybuffer@^1.0.0:
   version "1.0.1"
